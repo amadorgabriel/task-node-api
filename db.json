@@ -1,0 +1,12 @@
+{
+  "tasks": [
+    {
+      "id": "20141d53-1f0e-4179-8249-0ee2e640014b",
+      "title": "Task 1",
+      "description": "Descrição completa",
+      "completed_at": null,
+      "created_at": "Mon Jun 05 2023 15:41:13 GMT-0300 (Horário Padrão de Brasília)",
+      "updated_at": "Mon Jun 05 2023 15:41:13 GMT-0300 (Horário Padrão de Brasília)"
+    }
+  ]
+}
