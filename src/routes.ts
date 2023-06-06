@@ -27,13 +27,16 @@ export const routes: RouteType[] = [
     handler: (req, res) => {
       const { title, description } = req.body;
 
+      const fullDate = new Date()
+      let formattedDate = `${fullDate.getDate()}/${fullDate.getMonth()}/${fullDate.getFullYear()}`
+
       const task = {
         id: randomUUID(),
         title,
         description,
         completed_at: null,
-        created_at: String(new Date()),
-        updated_at: String(new Date()),
+        created_at: formattedDate,
+        updated_at: formattedDate,
       };
 
       database.insert("tasks", task);
