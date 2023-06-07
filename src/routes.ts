@@ -16,7 +16,12 @@ export const routes: RouteType[] = [
     method: "GET",
     path: buildRegexRoutePath("/tasks"),
     handler: (req, res) => {
-      const tasks = database.select("tasks");
+      const { search } = req.query;
+
+      const tasks = database.select("tasks", search ? {
+        title: search,
+        description: search,
+      } : null);
 
       return res.end(JSON.stringify(tasks));
     },
@@ -27,16 +32,15 @@ export const routes: RouteType[] = [
     handler: (req, res) => {
       const { title, description } = req.body;
 
-      const fullDate = new Date()
-      let formattedDate = `${fullDate.getDate()}/${fullDate.getMonth()}/${fullDate.getFullYear()}`
+      const timestamp = new Date().getTime();
 
       const task = {
         id: randomUUID(),
         title,
         description,
         completed_at: null,
-        created_at: formattedDate,
-        updated_at: formattedDate,
+        created_at: timestamp,
+        updated_at: timestamp,
       };
 
       database.insert("tasks", task);
