@@ -18,10 +18,15 @@ export const routes: RouteType[] = [
     handler: (req, res) => {
       const { search } = req.query;
 
-      const tasks = database.select("tasks", search ? {
-        title: search,
-        description: search,
-      } : null);
+      const tasks = database.select(
+        "tasks",
+        search
+          ? {
+              title: search,
+              description: search,
+            }
+          : null
+      );
 
       return res.end(JSON.stringify(tasks));
     },
@@ -51,16 +56,41 @@ export const routes: RouteType[] = [
   {
     method: "PUT",
     path: buildRegexRoutePath("/tasks/:id"),
-    handler: (req, res) => {},
+    handler: (req, res) => {
+      const { id } = req.params;
+      const { title, description } = req.body;
+
+      const obj = {
+        id: id,
+        title,
+        description,
+      };
+
+      database.update("tasks", id, obj);
+
+      return res.writeHead(204).end();
+    },
   },
   {
     method: "DELETE",
     path: buildRegexRoutePath("/tasks/:id"),
-    handler: (req, res) => {},
+    handler: (req, res) => {
+      const { id } = req.params;
+
+      database.delete("tasks", id)
+
+      return res.writeHead(204).end();
+    },
   },
   {
     method: "PATCH",
     path: buildRegexRoutePath("/tasks/:id/complete"),
-    handler: (req, res) => {},
+    handler: (req, res) => {
+      const { id } = req.params;
+
+      database.patch("tasks", id)
+
+      return res.writeHead(204).end();
+    },
   },
 ];

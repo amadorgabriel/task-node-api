@@ -33,16 +33,15 @@ export class Database {
       });
     }
 
-    if(data.length > 0) {
-       data = data.map((row: Task) => {
+    if (data.length > 0) {
+      data = data.map((row: Task) => {
         return {
           ...row,
           completed_at: row.completed_at && new Date(row.completed_at),
           updated_at: new Date(row.updated_at),
-          created_at: new Date(row.created_at)
-        }
-      })
-    
+          created_at: new Date(row.created_at),
+        };
+      });
     }
 
     return data;
@@ -60,7 +59,57 @@ export class Database {
     return data;
   }
 
-  update() {}
+  update(
+    table: string,
+    id: string,
+    obj: Partial<Pick<Task, "title" | "description">> | null
+  ) {
+    let data = (this.#database[table] ?? []) as Array<Task>;
 
-  delete() {}
+    if (data.length > 0) {
+      data = data.map((row) =>
+        row.id !== id
+          ? row
+          : {
+              ...row,
+              title: obj?.title ?? row.title,
+              description: obj?.description ?? row.description,
+              updated_at: new Date().getTime(),
+            }
+      );
+
+      this.#database[table] = data;
+
+      this.#persist();
+    }
+  }
+
+  patch(table: string, id: string) {
+    let data = (this.#database[table] ?? []) as Array<Task>;
+
+    if (data.length > 0) {
+      data = data.map((row: Task) => {
+        if (row.id !== id) return row;
+
+        return {
+          ...row,
+          completed_at: row.completed_at ? null : new Date().getTime(),
+        };
+      });
+
+      this.#database[table] = data
+
+      this.#persist()
+    }
+  }
+
+  delete(table: string, id: string) {
+    let data = (this.#database[table] ?? []) as Array<Task>;
+
+    data = data.filter((row) => row.id !== id);
+
+    this.#database[table] = data;
+
+    this.#persist();
+  }
 }
